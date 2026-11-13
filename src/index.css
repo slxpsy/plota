@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans bg-light-bg dark:bg-dark-bg text-light-textPrimary dark:text-dark-textPrimary antialiased transition-colors duration-200;
+    overflow-y: scroll;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Oswald', sans-serif !important;
+    letter-spacing: 0.03em;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
