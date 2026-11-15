@@ -1,81 +1,81 @@
 import React from 'react';
-import { Search, Film, User, LogOut, Dice5, Popcorn } from 'lucide-react';
+import { Search, User, LogOut, Dice5 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 
-const WitchHatIcon = ({ className = "w-4 h-4" }) => (
-  <svg
-    className={className}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M2 20h20" />
-    <path d="M5 20l5-16 4 5 1-2 4 13" />
-    <path d="M6.5 15.5h11" />
-  </svg>
+const PlotaLogo = () => (
+  <span className="inline-flex items-center font-black text-2xl tracking-tight text-light-textPrimary dark:text-dark-textPrimary select-none">
+    <span>PL</span>
+    <svg
+      viewBox="0 0 28 28"
+      className="w-[22px] h-[22px] mx-[1px] text-yellow-500 dark:text-yellow-400 transition-transform duration-500 group-hover:rotate-90"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="14" cy="14" r="11.5" stroke="currentColor" strokeWidth="2.4" />
+      <circle cx="14" cy="14" r="3" fill="currentColor" />
+      <circle cx="14" cy="7.2" r="1.6" fill="currentColor" />
+      <circle cx="14" cy="20.8" r="1.6" fill="currentColor" />
+      <circle cx="7.2" cy="14" r="1.6" fill="currentColor" />
+      <circle cx="20.8" cy="14" r="1.6" fill="currentColor" />
+    </svg>
+    <span>TA</span>
+  </span>
 );
 
-export const Navbar = ({ 
-  currentView, 
-  setCurrentView, 
-  searchQuery, 
-  setSearchQuery, 
-  user, 
+export const Navbar = ({
+  currentView,
+  setCurrentView,
+  searchQuery,
+  setSearchQuery,
+  user,
   onLogout,
   onOpenRoulette,
-  isPopcornEnabled,
-  onTogglePopcorn
 }) => {
   return (
-    <header className="w-full bg-light-surface dark:bg-dark-surface border-b border-light-border dark:border-dark-border transition-colors duration-200 relative z-40">
-      <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
-        
-        {/* Логотип */}
-        <div 
-          onClick={() => setCurrentView('home')} 
-          className="relative flex items-center gap-2 cursor-pointer select-none group"
+    <header className="sticky top-0 w-full bg-light-bg/90 dark:bg-dark-bg/90 backdrop-blur-md border-b border-light-border dark:border-dark-border transition-colors duration-200 z-40">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <button
+          type="button"
+          onClick={() => setCurrentView('home')}
+          className="flex items-center cursor-pointer group focus:outline-none"
         >
-          <div className="relative w-7 h-7 rounded-xs bg-dark-accent text-slate-950 font-bold flex items-center justify-center">
-            <WitchHatIcon className="absolute -top-2 -left-1.5 w-4 h-4 -rotate-12 text-light-textPrimary dark:text-dark-textPrimary transition-transform group-hover:rotate-0 duration-200" />
-            <Film className="w-4 h-4" />
-          </div>
-          
-          <span className="font-heading font-bold text-lg uppercase tracking-widest text-light-textPrimary dark:text-dark-textPrimary">
-            Plota<span className="text-dark-accent">.</span>
-          </span>
-        </div>
+          <PlotaLogo />
+        </button>
 
-        {/* Навігація */}
-        <nav className="flex items-center gap-1.5 text-xs font-sans font-semibold uppercase tracking-wider">
+        <nav className="flex items-center gap-6 text-sm font-medium">
           <button
+            type="button"
             onClick={() => setCurrentView('home')}
-            className={`px-3 py-1.5 rounded-xs border transition-colors cursor-pointer ${
+            className={`relative py-1 transition-colors cursor-pointer ${
               currentView === 'home'
-                ? 'bg-dark-accent text-slate-950 border-transparent font-bold'
-                : 'border-transparent text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
+                ? 'text-light-textPrimary dark:text-dark-textPrimary font-semibold'
+                : 'text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
             }`}
           >
             Головна
+            {currentView === 'home' && (
+              <span className="absolute inset-x-0 -bottom-[19px] h-[2px] bg-yellow-400" />
+            )}
           </button>
 
           <button
+            type="button"
             onClick={() => setCurrentView('catalog')}
-            className={`px-3 py-1.5 rounded-xs border transition-colors cursor-pointer ${
+            className={`relative py-1 transition-colors cursor-pointer ${
               currentView === 'catalog'
-                ? 'bg-dark-accent text-slate-950 border-transparent font-bold'
-                : 'border-transparent text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
+                ? 'text-light-textPrimary dark:text-dark-textPrimary font-semibold'
+                : 'text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
             }`}
           >
             Каталог
+            {currentView === 'catalog' && (
+              <span className="absolute inset-x-0 -bottom-[19px] h-[2px] bg-yellow-400" />
+            )}
           </button>
         </nav>
 
-        {/* Пошук */}
-        <div className="relative flex-1 max-w-xs hidden sm:block">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-light-textSecondary dark:text-dark-textSecondary" />
+        <div className="relative flex-1 max-w-xs hidden md:block">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-light-textSecondary dark:text-dark-textSecondary" />
           <input
             type="text"
             value={searchQuery}
@@ -83,37 +83,39 @@ export const Navbar = ({
               setSearchQuery(e.target.value);
               if (currentView !== 'catalog') setCurrentView('catalog');
             }}
-            placeholder="Шукати фільм у Plota..."
-            className="w-full pl-8 pr-3 py-1 text-xs font-sans rounded-xs
-                       bg-light-bg dark:bg-dark-bg
+            placeholder="Пошук фільму..."
+            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-md
+                       bg-light-surface dark:bg-dark-surface
                        border border-light-border dark:border-dark-border
                        text-light-textPrimary dark:text-dark-textPrimary placeholder-light-textSecondary dark:placeholder-dark-textSecondary
-                       focus:outline-none focus:border-dark-accent transition-colors duration-150"
+                       focus:outline-none focus:border-yellow-400 transition-colors"
           />
         </div>
 
-        {/* Права панель функцій */}
-        <div className="flex items-center gap-2">
-          
-          {/* Кнопка Movie Hunter */}
+        <div className="flex items-center gap-2.5">
           <button
+            type="button"
             onClick={onOpenRoulette}
-            title="Movie Hunter"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-sans font-bold uppercase tracking-wider rounded-xs border border-dark-accent/40 bg-dark-accent/10 text-dark-accent hover:bg-dark-accent hover:text-slate-950 transition-all cursor-pointer"
+            title="Випадковий фільм"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md
+                       border border-light-border dark:border-dark-border
+                       bg-light-surface dark:bg-dark-surface
+                       text-light-textPrimary dark:text-dark-textPrimary
+                       hover:border-yellow-400 transition-colors cursor-pointer"
           >
-            <Dice5 className="w-4 h-4 shrink-0" />
-            <span className="hidden md:inline">Movie Hunter</span>
+            <Dice5 className="w-3.5 h-3.5 text-yellow-500 dark:text-yellow-400 shrink-0" />
+            <span className="hidden sm:inline">Movie Hunter</span>
           </button>
 
-          {/* Авторизація / Профіль */}
           {user ? (
             <div className="flex items-center gap-1.5">
               <button
+                type="button"
                 onClick={() => setCurrentView('profile')}
-                className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-sans font-bold uppercase tracking-wider rounded-xs border transition-colors cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md border transition-colors cursor-pointer ${
                   currentView === 'profile'
-                    ? 'bg-dark-accent text-slate-950 border-transparent'
-                    : 'bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border text-light-textPrimary dark:text-dark-textPrimary hover:border-dark-accent'
+                    ? 'bg-yellow-400 text-zinc-950 border-yellow-400'
+                    : 'bg-light-surface dark:bg-dark-surface border-light-border dark:border-dark-border text-light-textPrimary dark:text-dark-textPrimary hover:border-yellow-400'
                 }`}
               >
                 <User className="w-3.5 h-3.5" />
@@ -121,6 +123,7 @@ export const Navbar = ({
               </button>
 
               <button
+                type="button"
                 onClick={onLogout}
                 title="Вийти"
                 className="p-1.5 text-light-textSecondary dark:text-dark-textSecondary hover:text-red-500 transition-colors cursor-pointer"
@@ -130,31 +133,17 @@ export const Navbar = ({
             </div>
           ) : (
             <button
+              type="button"
               onClick={() => setCurrentView('login')}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans font-bold uppercase tracking-wider rounded-xs bg-dark-accent text-slate-950 hover:opacity-90 transition-opacity cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-yellow-400 text-zinc-950 hover:bg-yellow-300 transition-colors cursor-pointer"
             >
               <User className="w-3.5 h-3.5" />
               <span>Увійти</span>
             </button>
           )}
 
-          {/* Кнопка перемикання зерен попкорну */}
-          <button
-            onClick={onTogglePopcorn}
-            title={isPopcornEnabled ? "Вимкнути попкорн" : "Увімкнути попкорн"}
-            className={`p-1.5 rounded-xs border transition-all cursor-pointer ${
-              isPopcornEnabled
-                ? 'bg-dark-accent/10 border-dark-accent/40 text-dark-accent'
-                : 'bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border text-light-textSecondary dark:text-dark-textSecondary opacity-50 hover:opacity-100'
-            }`}
-          >
-            <Popcorn className="w-3.5 h-3.5" />
-          </button>
-
-          {/* Перемикач теми */}
           <ThemeToggle />
         </div>
-
       </div>
     </header>
   );
