@@ -3,6 +3,7 @@ import { PosterCarousel } from './PosterCarousel';
 import { MediaCard } from './MediaCard';
 import { VibeCheck } from './VibeCheck';
 import { ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const Home = ({
   onGoToCatalog,
@@ -11,6 +12,7 @@ export const Home = ({
   watchlist = [],
   onToggleWatchlist,
 }) => {
+  const { t } = useLanguage();
   return (
     <div className="w-full font-sans">
       <PosterCarousel
@@ -27,10 +29,10 @@ export const Home = ({
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold text-light-textPrimary dark:text-dark-textPrimary">
-                Популярне в каталозі
+                {t('Популярне в каталозі')}
               </h2>
               <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary mt-0.5">
-                Стрічки з найвищими оцінками глядачів
+                {t('Стрічки з найвищими оцінками глядачів')}
               </p>
             </div>
 
@@ -39,7 +41,7 @@ export const Home = ({
               onClick={onGoToCatalog}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-yellow-600 dark:text-yellow-400 hover:underline cursor-pointer"
             >
-              <span>Увесь каталог ({trendingMedia.length})</span>
+              <span>{t('Увесь каталог')} ({trendingMedia.length})</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

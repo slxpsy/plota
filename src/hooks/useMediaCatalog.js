@@ -8,8 +8,10 @@ export const useMediaCatalog = ({
   minRating = 0,
   sortBy = 'default'
 }) => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Render the local catalog immediately; this avoids a temporary empty/demo
+  // carousel before the first filtering pass completes.
+  const [data, setData] = useState(INITIAL_MEDIA);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -19,7 +21,6 @@ export const useMediaCatalog = ({
 
     const fetchData = async () => {
       try {
-        await new Promise((res) => setTimeout(res, 250));
         if (!isMounted) return;
 
         let filtered = [...INITIAL_MEDIA];

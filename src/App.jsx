@@ -11,8 +11,10 @@ import { CustomSelect } from './components/CustomSelect';
 import { RandomMovieModal } from './components/RandomMovieModal';
 import { useMediaCatalog } from './hooks/useMediaCatalog';
 import { SlidersHorizontal, AlertCircle, RotateCcw } from 'lucide-react';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 
 export function CatalogContent() {
+  const { t } = useLanguage();
   const [currentView, setCurrentView] = useState('home');
   const [previousView, setPreviousView] = useState('catalog');
   const [searchQuery, setSearchQuery] = useState('');
@@ -283,9 +285,9 @@ export function CatalogContent() {
           setCustomLists(parsed.customLists);
           localStorage.setItem(`plota_custom_lists_${userIdKey}`, JSON.stringify(parsed.customLists));
         }
-        alert('Дані успішно імпортовано!');
+        alert(t('Дані успішно імпортовано!'));
       } catch (err) {
-        alert('Помилка читання файлу JSON');
+        alert(t('Помилка читання файлу JSON'));
       }
     };
     reader.readAsText(file);
@@ -311,7 +313,7 @@ export function CatalogContent() {
     <div className="min-h-screen bg-light-bg dark:bg-dark-bg text-light-textPrimary dark:text-dark-textPrimary font-sans relative overflow-x-hidden">
       
       {/* Попкорн */}
-      {isPopcornEnabled && <PopcornEasterEgg />}
+      {isPopcornEnabled && currentView === 'home' && <PopcornEasterEgg />}
 
       {/* Navbar */}
       <Navbar 
@@ -343,10 +345,10 @@ export function CatalogContent() {
                 <div className="flex items-center gap-2">
                   <SlidersHorizontal className="w-4 h-4 text-dark-accent" />
                   <h1 className="text-base font-heading font-bold uppercase tracking-wider">
-                    Каталог та фільтри
+                    {t('Каталог та фільтри')}
                   </h1>
                   <span className="text-xs text-light-textSecondary dark:text-dark-textSecondary font-sans">
-                    (Знайдено: <strong className="text-dark-accent font-bold">{data.length}</strong>)
+                    ({t('Знайдено')}: <strong className="text-dark-accent font-bold">{data.length}</strong>)
                   </span>
                 </div>
 
@@ -356,63 +358,63 @@ export function CatalogContent() {
                     className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-sans font-semibold text-red-500 hover:bg-red-500/10 border border-red-500/30 rounded-xs transition-colors cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Скинути все</span>
+                    <span>{t('Скинути все')}</span>
                   </button>
                 )}
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <CustomSelect
-                  label="Жанр"
+                  label={t('Жанр')}
                   value={selectedGenre}
                   onChange={setSelectedGenre}
                   options={[
-                    { label: 'Усі жанри', value: 'All' },
-                    { label: 'Фантастика', value: 'Фантастика' },
-                    { label: 'Драма', value: 'Драма' },
-                    { label: 'Трилер', value: 'Трилер' },
-                    { label: 'Кримінал', value: 'Кримінал' },
-                    { label: 'Екшн', value: 'Екшн' },
-                    { label: 'Біографія', value: 'Біографія' },
-                    { label: 'Мелодрама', value: 'Мелодрама' },
-                    { label: 'Музика', value: 'Музика' },
+                    { label: t('Усі жанри'), value: 'All' },
+                    { label: t('Фантастика'), value: 'Фантастика' },
+                    { label: t('Драма'), value: 'Драма' },
+                    { label: t('Трилер'), value: 'Трилер' },
+                    { label: t('Кримінал'), value: 'Кримінал' },
+                    { label: t('Екшн'), value: 'Екшн' },
+                    { label: t('Біографія'), value: 'Біографія' },
+                    { label: t('Мелодрама'), value: 'Мелодрама' },
+                    { label: t('Музика'), value: 'Музика' },
                   ]}
                 />
 
                 <CustomSelect
-                  label="Рік випуску"
+                  label={t('Рік випуску')}
                   value={selectedYear}
                   onChange={setSelectedYear}
                   options={[
-                    { label: 'Усі роки', value: 'All' },
-                    { label: '2020-ті (2020+)', value: '2020s' },
-                    { label: '2010-ті (2010–2019)', value: '2010s' },
-                    { label: '2000-ні (2000–2009)', value: '2000s' },
-                    { label: 'Класика (до 2000)', value: 'older' },
+                    { label: t('Усі роки'), value: 'All' },
+                    { label: t('2020-ті (2020+)'), value: '2020s' },
+                    { label: t('2010-ті (2010–2019)'), value: '2010s' },
+                    { label: t('2000-ні (2000–2009)'), value: '2000s' },
+                    { label: t('Класика (до 2000)'), value: 'older' },
                   ]}
                 />
 
                 <CustomSelect
-                  label="Мін. Рейтинг IMDb"
+                  label={t('Мін. Рейтинг IMDb')}
                   value={minRating}
                   onChange={(val) => setMinRating(Number(val))}
                   options={[
-                    { label: 'Будь-який', value: 0 },
+                    { label: t('Будь-який'), value: 0 },
                     { label: '8.0+', value: 8.0 },
                     { label: '8.5+', value: 8.5 },
                   ]}
                 />
 
                 <CustomSelect
-                  label="Сортувати за"
+                  label={t('Сортувати за')}
                   value={sortBy}
                   onChange={setSortBy}
                   options={[
-                    { label: 'За замовчуванням', value: 'default' },
-                    { label: 'Рейтингом (спочатку вищий)', value: 'rating_desc' },
-                    { label: 'Роком (спочатку новіші)', value: 'year_desc' },
-                    { label: 'Роком (спочатку старіші)', value: 'year_asc' },
-                    { label: 'Назвою (А-Я)', value: 'title_asc' },
+                    { label: t('За замовчуванням'), value: 'default' },
+                    { label: t('Рейтингом (спочатку вищий)'), value: 'rating_desc' },
+                    { label: t('Роком (спочатку новіші)'), value: 'year_desc' },
+                    { label: t('Роком (спочатку старіші)'), value: 'year_asc' },
+                    { label: t('Назвою (А-Я)'), value: 'title_asc' },
                   ]}
                 />
               </div>
@@ -421,7 +423,7 @@ export function CatalogContent() {
             {error && (
               <div className="p-3 bg-red-900/20 border border-red-800 text-red-400 text-xs font-sans flex items-center gap-2 rounded-xs">
                 <AlertCircle className="w-4 h-4" />
-                <span>{error}</span>
+                <span>{t(error)}</span>
               </div>
             )}
 
@@ -432,16 +434,16 @@ export function CatalogContent() {
             ) : data.length === 0 ? (
               <div className="text-center py-12 bg-light-surface dark:bg-dark-surface rounded-md border border-light-border dark:border-dark-border space-y-2">
                 <p className="text-sm font-heading font-bold uppercase text-light-textPrimary dark:text-dark-textPrimary">
-                  Нічого не знайдено
+                  {t('Нічого не знайдено')}
                 </p>
                 <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary">
-                  Спробуйте змінити або скинути вибрані фільтри.
+                  {t('Спробуйте змінити або скинути вибрані фільтри.')}
                 </p>
                 <button
                   onClick={handleResetFilters}
                   className="mt-2 px-3 py-1.5 text-xs font-sans font-bold uppercase bg-dark-accent text-slate-950 rounded-xs cursor-pointer"
                 >
-                  Скинути фільтри
+                  {t('Скинути фільтри')}
                 </button>
               </div>
             ) : (
@@ -462,10 +464,10 @@ export function CatalogContent() {
             onBack={() => setCurrentView(previousView || 'catalog')}
             backLabel={
               previousView === 'profile'
-                ? 'Назад до профілю'
+                ? t('Назад до профілю')
                 : previousView === 'home'
-                ? 'Назад на головну'
-                : 'Назад до каталогу'
+                ? t('Назад на головну')
+                : t('Назад до каталогу')
             }
             isFavorite={favorites.some((f) => String(f.id) === String(selectedMedia.id))}
             isWatchlist={watchlist.some((w) => String(w.id) === String(selectedMedia.id))}
@@ -495,6 +497,7 @@ export function CatalogContent() {
             watchlistMedia={watchlist}
             userReviews={userReviews}
             onSelectMedia={(item) => handleOpenDetail(item, 'profile')}
+            onGoToCatalog={() => setCurrentView('catalog')}
             onDeleteReviewGlobal={handleDeleteReviewGlobal}
             allMedia={data}
             customLists={customLists}
@@ -519,8 +522,10 @@ export function CatalogContent() {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <CatalogContent />
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <CatalogContent />
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }

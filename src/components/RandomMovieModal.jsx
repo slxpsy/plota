@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { Dice5, X, ArrowRight, RefreshCw, Star, Clock, Sparkles, SlidersHorizontal } from 'lucide-react';
+import { Dice5, X, ArrowRight, RefreshCw, Star, Clock, Sparkles, SlidersHorizontal, Film } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const ROULETTE_VIBES = [
   { id: 'all', label: 'Усі вайби', kw: '' },
@@ -30,6 +31,7 @@ const parseDurationInMinutes = (durationStr) => {
 };
 
 export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedia }) => {
+  const { t, movieTitle, movieSynopsis, movieDuration } = useLanguage();
   const [selectedVibe, setSelectedVibe] = useState('all');
   const [selectedDuration, setSelectedDuration] = useState('any');
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -108,40 +110,41 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs animate-fadeIn">
-      <div className="relative w-full max-w-md bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-md p-5 space-y-4 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-950/80 backdrop-blur-xs animate-fadeIn">
+      <div className="relative w-full max-w-2xl max-h-[calc(100vh-2rem)] overflow-y-auto no-scrollbar bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-lg p-5 sm:p-7 space-y-5 shadow-2xl">
         
         {/* Кнопка закриття */}
         <button
           onClick={handleClose}
           type="button"
-          className="absolute top-4 right-4 text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary transition-colors cursor-pointer"
+          aria-label={t('Закрити Movie Hunter')}
+          className="absolute top-5 right-5 rounded-md p-1 text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-accent"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Заголовок */}
-        <div className="flex items-center gap-2 border-b border-light-border dark:border-dark-border pb-3">
-          <Dice5 className="w-5 h-5 text-dark-accent" />
-          <h2 className="text-base font-heading font-bold uppercase tracking-wider text-light-textPrimary dark:text-dark-textPrimary">
-            Movie Hunter — Пошук наосліп
+        <div className="flex items-center gap-3 border-b border-light-border dark:border-dark-border pb-4 pr-9">
+          <Dice5 className="w-6 h-6 shrink-0 text-dark-accent" />
+          <h2 className="text-lg sm:text-xl font-heading font-bold uppercase tracking-wider text-light-textPrimary dark:text-dark-textPrimary">
+            {t('Movie Hunter — Пошук наосліп')}
           </h2>
         </div>
 
         {/* Налаштування вайбу та тривалості */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           
           {/* Вибір вайбу */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-[11px] font-sans font-bold uppercase text-light-textSecondary dark:text-dark-textSecondary">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs font-sans font-bold uppercase text-light-textSecondary dark:text-dark-textSecondary">
               <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3 h-3 text-dark-accent" />
-                <span>Категорія або вайб:</span>
+                <Sparkles className="w-3.5 h-3.5 text-dark-accent" />
+                <span>{t('Категорія або вайб:')}</span>
               </span>
-              <span className="text-dark-accent font-semibold">({pool.length} фільмів)</span>
+              <span className="text-dark-accent font-semibold">({pool.length} {t('фільмів')})</span>
             </div>
 
-            <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto no-scrollbar pt-1">
+            <div className="flex flex-wrap gap-2 pt-1">
               {ROULETTE_VIBES.map((vibe) => {
                 const isSelected = selectedVibe === vibe.id;
                 return (
@@ -149,13 +152,13 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
                     key={vibe.id}
                     type="button"
                     onClick={() => handleVibeChange(vibe.id)}
-                    className={`px-2.5 py-1 text-[11px] font-sans font-medium rounded-xs border transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 text-xs font-sans font-medium rounded-sm border transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-accent ${
                       isSelected
-                        ? 'bg-dark-accent text-slate-950 border-transparent font-bold'
-                        : 'bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border text-light-textSecondary dark:text-dark-textSecondary hover:border-dark-accent/50'
+                        ? 'bg-dark-accent text-slate-950 border-dark-accent font-bold'
+                        : 'bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border text-light-textSecondary dark:text-dark-textSecondary hover:border-dark-accent/60 hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
                     }`}
                   >
-                    {vibe.label}
+                    {t(vibe.label)}
                   </button>
                 );
               })}
@@ -163,13 +166,13 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
           </div>
 
           {/* Вибір тривалості */}
-          <div className="space-y-1.5 pt-1 border-t border-light-border dark:border-dark-border">
-            <div className="flex items-center gap-1.5 text-[11px] font-sans font-bold uppercase text-light-textSecondary dark:text-dark-textSecondary pt-1">
-              <SlidersHorizontal className="w-3 h-3 text-dark-accent" />
-              <span>Тривалість фільму:</span>
+          <div className="space-y-2 pt-3 border-t border-light-border dark:border-dark-border">
+            <div className="flex items-center gap-1.5 text-xs font-sans font-bold uppercase text-light-textSecondary dark:text-dark-textSecondary pt-1">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-dark-accent" />
+              <span>{t('Тривалість фільму:')}</span>
             </div>
 
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {DURATION_FILTERS.map((dur) => {
                 const isSelected = selectedDuration === dur.id;
                 return (
@@ -177,13 +180,13 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
                     key={dur.id}
                     type="button"
                     onClick={() => handleDurationChange(dur.id)}
-                    className={`px-2.5 py-1 text-[11px] font-sans font-medium rounded-xs border transition-all cursor-pointer ${
+                    className={`px-3 py-1.5 text-xs font-sans font-medium rounded-sm border transition-colors cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-accent ${
                       isSelected
-                        ? 'bg-dark-accent/20 text-dark-accent border-dark-accent font-bold'
-                        : 'bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border text-light-textSecondary dark:text-dark-textSecondary hover:border-dark-accent/50'
+                        ? 'bg-dark-accent text-slate-950 border-dark-accent font-bold'
+                        : 'bg-light-bg dark:bg-dark-bg border-light-border dark:border-dark-border text-light-textSecondary dark:text-dark-textSecondary hover:border-dark-accent/60 hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
                     }`}
                   >
-                    {dur.label}
+                    {t(dur.label)}
                   </button>
                 );
               })}
@@ -194,26 +197,31 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
 
         {/* Результат або запрошення до запуску */}
         {!hasStarted ? (
-          <div className="text-center py-8 px-4 bg-light-bg dark:bg-dark-bg rounded-xs border border-dashed border-light-border dark:border-dark-border space-y-2">
-            <div className="w-10 h-10 mx-auto rounded-full bg-dark-accent/10 border border-dark-accent/30 flex items-center justify-center text-dark-accent">
-              <Dice5 className="w-5 h-5" />
+          <div className="min-h-40 flex flex-col items-center justify-center text-center py-6 px-5 bg-light-bg dark:bg-dark-bg rounded-sm border border-dashed border-light-border dark:border-dark-border space-y-3">
+            <div className="w-12 h-12 rounded-full bg-dark-accent/10 border border-dark-accent/30 flex items-center justify-center text-dark-accent">
+              <Dice5 className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-xs font-bold uppercase text-light-textPrimary dark:text-dark-textPrimary">
-                Готові полювати на кіно?
+              <p className="text-sm font-bold uppercase text-light-textPrimary dark:text-dark-textPrimary">
+                {t('Підберемо фільм для перегляду')}
               </p>
-              <p className="text-[11px] text-light-textSecondary dark:text-dark-textSecondary mt-0.5">
-                Виберіть вайб та тривалість і тисніть кнопку запуску.
+              <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary mt-1">
+                {t('Залиште всі вайби або звузьте пошук до свого настрою.')}
               </p>
             </div>
           </div>
         ) : selectedMovie ? (
           <div className="space-y-3 pt-1">
-            <div className={`relative aspect-video rounded-xs overflow-hidden border border-light-border dark:border-dark-border transition-all duration-150 ${isSpinning ? 'opacity-60 scale-98 blur-[1px]' : 'opacity-100 scale-100'}`}>
+            <div className={`relative ${selectedMovie.backdrop ? 'aspect-[2.2/1] max-h-[32vh]' : 'aspect-[2/3] max-h-[32vh] max-w-[220px]'} rounded-xs overflow-hidden border border-light-border dark:border-dark-border bg-stone-900 transition-all duration-150 ${isSpinning ? 'opacity-60 scale-98 blur-[1px]' : 'opacity-100 scale-100'}`}>
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center text-stone-300" aria-hidden="true">
+                <Film className="h-8 w-8 text-dark-accent/80" />
+                <span className="font-heading text-sm font-bold">{movieTitle(selectedMovie)}</span>
+              </div>
               <img
                 src={selectedMovie.backdrop || selectedMovie.poster}
-                alt={selectedMovie.title}
+                alt={movieTitle(selectedMovie)}
                 className="w-full h-full object-cover"
+                onError={(event) => { event.currentTarget.style.display = 'none'; }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent flex flex-col justify-end p-3.5">
                 <div className="flex items-center gap-2 text-[10px] font-sans font-bold text-dark-accent uppercase mb-0.5">
@@ -223,27 +231,27 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
                     <>
                       <span>•</span>
                       <Clock className="w-3 h-3" />
-                      <span>{selectedMovie.duration}</span>
+                  <span>{movieDuration(selectedMovie.duration)}</span>
                     </>
                   )}
                 </div>
                 <h3 className="text-base font-heading font-bold uppercase text-white leading-tight">
-                  {selectedMovie.title}
+                  {movieTitle(selectedMovie)}
                 </h3>
               </div>
             </div>
 
-            <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary line-clamp-2 leading-relaxed">
-              {selectedMovie.synopsis}
+            <p className="text-sm text-light-textSecondary dark:text-dark-textSecondary line-clamp-2 leading-relaxed">
+              {movieSynopsis(selectedMovie)}
             </p>
           </div>
         ) : (
           <div className="text-center py-8 bg-light-bg dark:bg-dark-bg rounded-xs border border-light-border dark:border-dark-border space-y-1">
             <p className="text-xs font-bold uppercase text-light-textPrimary dark:text-dark-textPrimary">
-              Немає фільмів за такими параметрами
+              {t('Немає фільмів за такими параметрами')}
             </p>
-            <p className="text-[11px] text-light-textSecondary dark:text-dark-textSecondary">
-              Спробуйте розширити вибір тривалості або вайбу.
+            <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary">
+              {t('Спробуйте розширити вибір тривалості або вайбів.')}
             </p>
           </div>
         )}
@@ -255,10 +263,10 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
               type="button"
               onClick={() => handleSpin()}
               disabled={pool.length === 0}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xs bg-dark-accent text-slate-950 text-xs font-sans font-bold uppercase hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-50"
+              className="w-full min-h-12 flex items-center justify-center gap-2 py-3 px-4 rounded-sm bg-dark-accent text-slate-950 text-sm font-sans font-bold uppercase hover:brightness-105 transition-[filter] cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-accent"
             >
               <Dice5 className="w-4 h-4" />
-              <span>Запустити Movie Hunter</span>
+              <span>{t('Запустити Movie Hunter')}</span>
             </button>
           ) : (
             <div className="flex items-center gap-2.5">
@@ -266,10 +274,10 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
                 type="button"
                 onClick={() => handleSpin()}
                 disabled={isSpinning || pool.length === 0}
-                className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xs border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-bg text-xs font-sans font-bold uppercase hover:border-dark-accent transition-colors cursor-pointer disabled:opacity-50"
+                className="flex-1 min-h-11 flex items-center justify-center gap-2 py-2.5 px-3 rounded-sm border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-bg text-xs font-sans font-bold uppercase hover:border-dark-accent transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-accent"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isSpinning ? 'animate-spin' : ''}`} />
-                <span>Перекрутити</span>
+                <span>{t('Перекрутити')}</span>
               </button>
 
               {selectedMovie && (
@@ -279,9 +287,9 @@ export const RandomMovieModal = ({ isOpen, onClose, mediaList = [], onSelectMedi
                     onSelectMedia(selectedMovie);
                     handleClose();
                   }}
-                  className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xs bg-dark-accent text-slate-950 text-xs font-sans font-bold uppercase hover:opacity-90 transition-opacity cursor-pointer font-bold"
+                className="flex-1 min-h-11 flex items-center justify-center gap-2 py-2.5 px-3 rounded-sm bg-dark-accent text-slate-950 text-xs font-sans font-bold uppercase hover:brightness-105 transition-[filter] cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-accent"
                 >
-                  <span>Перейти</span>
+                  <span>{t('Перейти')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               )}

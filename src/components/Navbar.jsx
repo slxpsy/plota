@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, User, LogOut, Dice5 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
+import { useLanguage } from '../context/LanguageContext';
 
 const PlotaLogo = () => (
   <span className="inline-flex items-center font-black text-2xl tracking-tight text-light-textPrimary dark:text-dark-textPrimary select-none">
@@ -31,6 +32,7 @@ export const Navbar = ({
   onLogout,
   onOpenRoulette,
 }) => {
+  const { language, toggleLanguage, t } = useLanguage();
   return (
     <header className="sticky top-0 w-full bg-light-bg/90 dark:bg-dark-bg/90 backdrop-blur-md border-b border-light-border dark:border-dark-border transition-colors duration-200 z-40">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
@@ -52,7 +54,7 @@ export const Navbar = ({
                 : 'text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
             }`}
           >
-            Головна
+            {t('Головна')}
             {currentView === 'home' && (
               <span className="absolute inset-x-0 -bottom-[19px] h-[2px] bg-yellow-400" />
             )}
@@ -67,7 +69,7 @@ export const Navbar = ({
                 : 'text-light-textSecondary dark:text-dark-textSecondary hover:text-light-textPrimary dark:hover:text-dark-textPrimary'
             }`}
           >
-            Каталог
+            {t('Каталог')}
             {currentView === 'catalog' && (
               <span className="absolute inset-x-0 -bottom-[19px] h-[2px] bg-yellow-400" />
             )}
@@ -83,7 +85,7 @@ export const Navbar = ({
               setSearchQuery(e.target.value);
               if (currentView !== 'catalog') setCurrentView('catalog');
             }}
-            placeholder="Пошук фільму..."
+            placeholder={t('Пошук фільму...')}
             className="w-full pl-9 pr-3 py-1.5 text-xs rounded-md
                        bg-light-surface dark:bg-dark-surface
                        border border-light-border dark:border-dark-border
@@ -96,7 +98,7 @@ export const Navbar = ({
           <button
             type="button"
             onClick={onOpenRoulette}
-            title="Випадковий фільм"
+            title={t('Випадковий фільм')}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md
                        border border-light-border dark:border-dark-border
                        bg-light-surface dark:bg-dark-surface
@@ -125,7 +127,7 @@ export const Navbar = ({
               <button
                 type="button"
                 onClick={onLogout}
-                title="Вийти"
+                title={t('Вийти')}
                 className="p-1.5 text-light-textSecondary dark:text-dark-textSecondary hover:text-red-500 transition-colors cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -138,11 +140,20 @@ export const Navbar = ({
               className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-md bg-yellow-400 text-zinc-950 hover:bg-yellow-300 transition-colors cursor-pointer"
             >
               <User className="w-3.5 h-3.5" />
-              <span>Увійти</span>
+              <span>{t('Увійти')}</span>
             </button>
           )}
 
           <ThemeToggle />
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            aria-label={language === 'uk' ? 'Switch language to English' : 'Змінити мову на українську'}
+            title={language === 'uk' ? 'Switch language to English' : 'Змінити мову на українську'}
+            className="min-w-10 px-2.5 py-1.5 text-xs font-bold rounded-md border border-light-border dark:border-dark-border bg-light-surface dark:bg-dark-surface text-light-textPrimary dark:text-dark-textPrimary hover:border-yellow-400 transition-colors cursor-pointer"
+          >
+            {language === 'uk' ? 'EN' : 'УК'}
+          </button>
         </div>
       </div>
     </header>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { Film, User, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 
 export const AuthPage = ({ onLoginSuccess, onCancel }) => {
+  const { t } = useLanguage();
   const [isRegister, setIsRegister] = useState(false);
   
   // Поля форми
@@ -34,12 +36,12 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
       const trimmedEmail = email.trim().toLowerCase();
 
       if (!trimmedUsername || !trimmedEmail || !password) {
-        setError('Будь ласка, заповніть усі поля');
+        setError(t('Будь ласка, заповніть усі поля'));
         return;
       }
 
       if (trimmedUsername.length < 3) {
-        setError('Нікнейм має містити щонайменше 3 символи');
+        setError(t('Нікнейм має містити щонайменше 3 символи'));
         return;
       }
 
@@ -48,7 +50,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
         (u) => u.username && u.username.toLowerCase() === trimmedUsername.toLowerCase()
       );
       if (isUsernameTaken) {
-        setError('Цей нікнейм уже зайнятий. Оберіть інший!');
+        setError(t('Цей нікнейм уже зайнятий. Оберіть інший!'));
         return;
       }
 
@@ -57,7 +59,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
         (u) => u.email && u.email.toLowerCase() === trimmedEmail
       );
       if (isEmailTaken) {
-        setError('Користувач із такою поштою вже існує');
+        setError(t('Користувач із такою поштою вже існує'));
         return;
       }
 
@@ -81,7 +83,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
       const trimmedInput = loginInput.trim();
 
       if (!trimmedInput || !password) {
-        setError('Введіть нікнейм/email та пароль');
+        setError(t('Введіть нікнейм/email та пароль'));
         return;
       }
 
@@ -93,12 +95,12 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
       );
 
       if (!foundUser) {
-        setError('Користувача з таким нікнеймом або email не знайдено');
+        setError(t('Користувача з таким нікнеймом або email не знайдено'));
         return;
       }
 
       if (foundUser.password !== password) {
-        setError('Невірний пароль');
+        setError(t('Невірний пароль'));
         return;
       }
 
@@ -117,12 +119,12 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
             <Film className="w-6 h-6" />
           </div>
           <h1 className="text-xl font-heading font-bold uppercase tracking-wider text-light-textPrimary dark:text-dark-textPrimary">
-            {isRegister ? 'Реєстрація в Plota' : 'Вхід в акаунт'}
+            {t(isRegister ? 'Реєстрація в Plota' : 'Вхід в акаунт')}
           </h1>
           <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary">
             {isRegister
-              ? 'Створіть свій унікальний профіль для оцінок та рецензій'
-              : 'Увійдіть за допомогою нікнейму або електронної пошти'}
+              ? t('Створіть свій унікальний профіль для оцінок та рецензій')
+              : t('Увійдіть за допомогою нікнейму або електронної пошти')}
           </p>
         </div>
 
@@ -141,7 +143,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
               {/* Нікнейм */}
               <div className="space-y-1">
                 <label className="text-[11px] font-sans font-bold uppercase tracking-wider text-light-textSecondary dark:text-dark-textSecondary">
-                  Нікнейм (унікальний)
+                  {t('Нікнейм (унікальний)')}
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-textSecondary dark:text-dark-textSecondary" />
@@ -149,7 +151,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="наприклад: movie_geek"
+                    placeholder={t('наприклад: movie_geek')}
                     className="w-full pl-9 pr-3 py-2 text-xs font-sans bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border rounded-xs text-light-textPrimary dark:text-dark-textPrimary focus:outline-none focus:border-dark-accent"
                     required
                   />
@@ -178,7 +180,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
             /* Вхід: Нікнейм або Email */
             <div className="space-y-1">
               <label className="text-[11px] font-sans font-bold uppercase tracking-wider text-light-textSecondary dark:text-dark-textSecondary">
-                Нікнейм або Email
+                {t('Нікнейм або Email')}
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-textSecondary dark:text-dark-textSecondary" />
@@ -186,7 +188,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
                   type="text"
                   value={loginInput}
                   onChange={(e) => setLoginInput(e.target.value)}
-                  placeholder="Введіть нікнейм або пошту..."
+                  placeholder={t('Введіть нікнейм або пошту...')}
                   className="w-full pl-9 pr-3 py-2 text-xs font-sans bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border rounded-xs text-light-textPrimary dark:text-dark-textPrimary focus:outline-none focus:border-dark-accent"
                   required
                 />
@@ -197,7 +199,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
           {/* Пароль */}
           <div className="space-y-1">
             <label className="text-[11px] font-sans font-bold uppercase tracking-wider text-light-textSecondary dark:text-dark-textSecondary">
-              Пароль
+              {t('Пароль')}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-light-textSecondary dark:text-dark-textSecondary" />
@@ -205,7 +207,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder={t('Введіть пароль...')}
                 className="w-full pl-9 pr-3 py-2 text-xs font-sans bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border rounded-xs text-light-textPrimary dark:text-dark-textPrimary focus:outline-none focus:border-dark-accent"
                 required
               />
@@ -217,7 +219,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
             type="submit"
             className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xs bg-dark-accent text-slate-950 text-xs font-sans font-bold uppercase hover:opacity-90 transition-opacity cursor-pointer pt-3"
           >
-            <span>{isRegister ? 'Зареєструватися' : 'Увійти'}</span>
+            <span>{t(isRegister ? 'Зареєструватися' : 'Увійти')}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
@@ -233,8 +235,8 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
             className="text-xs text-light-textSecondary dark:text-dark-textSecondary hover:text-dark-accent transition-colors cursor-pointer font-sans"
           >
             {isRegister
-              ? 'Вже є акаунт? Увійти'
-              : 'Немає акаунта? Зареєструватися'}
+              ? t('Вже є акаунт? Увійти')
+              : t('Немає акаунта? Зареєструватися')}
           </button>
 
           {onCancel && (
@@ -243,7 +245,7 @@ export const AuthPage = ({ onLoginSuccess, onCancel }) => {
               onClick={onCancel}
               className="text-[11px] text-light-textSecondary dark:text-dark-textSecondary hover:underline cursor-pointer"
             >
-              Скасувати
+              {t('Скасувати')}
             </button>
           )}
         </div>

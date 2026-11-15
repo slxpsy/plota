@@ -77,7 +77,7 @@ export const PopcornEasterEgg = () => {
   if (!kernelSprite && !popcornSprite) return null;
 
   return (
-    <div className="absolute inset-x-0 top-0 bottom-0 pointer-events-none select-none z-30 overflow-hidden hidden xl:block">
+    <div className="absolute inset-x-0 top-0 bottom-0 pointer-events-none select-none z-0 overflow-hidden hidden xl:block">
       {SPATTERED_KERNELS.map((k) => {
         const poppedData = poppedState[k.id];
         const isPopped = Boolean(poppedData);

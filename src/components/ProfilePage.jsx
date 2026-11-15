@@ -12,9 +12,39 @@ import {
   Download, 
   Upload, 
   X,
-  RotateCw 
+  RotateCw,
+  ArrowRight,
+  ChevronDown
 } from 'lucide-react';
 import { MediaCard } from './MediaCard';
+import { useLanguage } from '../context/LanguageContext';
+
+const EmptyProfileState = ({ icon: Icon, title, description, actionLabel, onAction }) => {
+  const { t } = useLanguage();
+  return (
+  <div className="flex min-h-[230px] flex-col items-center justify-center rounded-lg border border-dashed border-light-border dark:border-dark-border bg-light-surface/60 dark:bg-dark-surface/60 px-6 py-9 text-center">
+    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full border border-dark-accent/25 bg-dark-accent/10 text-dark-accent">
+      <Icon className="h-5 w-5" />
+    </div>
+    <h2 className="font-heading text-base font-bold uppercase tracking-wide text-light-textPrimary dark:text-dark-textPrimary">
+      {t(title)}
+    </h2>
+    <p className="mt-1 max-w-md text-sm leading-relaxed text-light-textSecondary dark:text-dark-textSecondary">
+      {t(description)}
+    </p>
+    {onAction && (
+      <button
+        type="button"
+        onClick={onAction}
+        className="mt-5 inline-flex min-h-10 items-center gap-2 rounded-sm bg-dark-accent px-4 py-2 text-xs font-bold uppercase text-slate-950 transition-colors hover:bg-amber-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-dark-accent"
+      >
+        {t(actionLabel)}
+        <ArrowRight className="h-3.5 w-3.5" />
+      </button>
+    )}
+  </div>
+  );
+};
 
 const parseDurationInMinutes = (durationStr) => {
   if (!durationStr) return 0;
@@ -38,8 +68,10 @@ export const ProfilePage = ({
   onDeleteList,
   onRemoveFromList,
   onExportUserData,
-  onImportUserData
+  onImportUserData,
+  onGoToCatalog
 }) => {
+  const { t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState('favorites');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newListTitle, setNewListTitle] = useState('');
@@ -65,7 +97,9 @@ export const ProfilePage = ({
 
   const watchHours = Math.floor(totalMinutes / 60);
   const watchMins = totalMinutes % 60;
-  const watchTimeFormatted = totalMinutes > 0 ? `${watchHours}г ${watchMins}хв` : '0г 0хв';
+  const watchTimeFormatted = language === 'en'
+    ? `${watchHours}h ${watchMins}m`
+    : (totalMinutes > 0 ? `${watchHours}г ${watchMins}хв` : '0г 0хв');
 
   const avatarLetter = (user.name || 'U').charAt(0).toUpperCase();
 
@@ -98,7 +132,7 @@ export const ProfilePage = ({
             </h1>
             <div className="flex items-center gap-1.5 text-xs text-light-textSecondary dark:text-dark-textSecondary font-sans">
               <Calendar className="w-3.5 h-3.5" />
-              <span>У Plota з Жовтня 2026</span>
+              <span>{t('У Plota з Жовтня 2026')}</span>
             </div>
           </div>
         </div>
@@ -111,7 +145,7 @@ export const ProfilePage = ({
               {watchTimeFormatted}
             </span>
             <span className="block text-[10px] font-sans font-bold uppercase tracking-wider text-light-textSecondary dark:text-dark-textSecondary">
-              ГОДИН ПЕРЕГЛЯДУ
+              {t('ГОДИН ПЕРЕГЛЯДУ')}
             </span>
           </div>
 
@@ -120,7 +154,7 @@ export const ProfilePage = ({
               {userReviews.length}
             </span>
             <span className="block text-[10px] font-sans font-bold uppercase tracking-wider text-light-textSecondary dark:text-dark-textSecondary">
-              РЕЦЕНЗІЙ
+              {t('РЕЦЕНЗІЙ')}
             </span>
           </div>
 
@@ -129,7 +163,7 @@ export const ProfilePage = ({
               {watchlistMedia.length}
             </span>
             <span className="block text-[10px] font-sans font-bold uppercase tracking-wider text-light-textSecondary dark:text-dark-textSecondary">
-              У ЗБЕРЕЖЕНИХ
+              {t('У ЗБЕРЕЖЕНИХ')}
             </span>
           </div>
 
@@ -138,40 +172,11 @@ export const ProfilePage = ({
               {favoriteMedia.length}
             </span>
             <span className="block text-[10px] font-sans font-bold uppercase tracking-wider text-light-textSecondary dark:text-dark-textSecondary">
-              В УЛЮБЛЕНИХ
+              {t('В УЛЮБЛЕНИХ')}
             </span>
           </div>
         </div>
 
-      </div>
-
-      {/* Експорт / Імпорт JSON */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-light-surface dark:bg-dark-surface p-3.5 rounded-md border border-light-border dark:border-dark-border">
-        <span className="text-xs font-sans font-bold uppercase text-light-textSecondary dark:text-dark-textSecondary">
-          Управління даними акаунта (JSON):
-        </span>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onExportUserData}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans font-semibold rounded-xs bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border text-light-textPrimary dark:text-dark-textPrimary hover:border-dark-accent transition-colors cursor-pointer"
-          >
-            <Download className="w-3.5 h-3.5 text-dark-accent" />
-            <span>Експортувати JSON</span>
-          </button>
-
-          <label className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans font-semibold rounded-xs bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border text-light-textPrimary dark:text-dark-textPrimary hover:border-dark-accent transition-colors cursor-pointer">
-            <Upload className="w-3.5 h-3.5 text-dark-accent" />
-            <span>Імпортувати JSON</span>
-            <input
-              type="file"
-              accept=".json"
-              onChange={onImportUserData}
-              className="hidden"
-            />
-          </label>
-        </div>
       </div>
 
       {/* Вкладки */}
@@ -186,7 +191,7 @@ export const ProfilePage = ({
           }`}
         >
           <Heart className="w-3.5 h-3.5" />
-          <span>Улюблені ({favoriteMedia.length})</span>
+          <span>{t('Улюблене')} ({favoriteMedia.length})</span>
         </button>
 
         <button
@@ -199,7 +204,7 @@ export const ProfilePage = ({
           }`}
         >
           <Bookmark className="w-3.5 h-3.5" />
-          <span>У збережених ({watchlistMedia.length})</span>
+          <span>{t('У збережених')} ({watchlistMedia.length})</span>
         </button>
 
         <button
@@ -212,7 +217,7 @@ export const ProfilePage = ({
           }`}
         >
           <MessageSquare className="w-3.5 h-3.5" />
-          <span>Мої рецензії ({userReviews.length})</span>
+          <span>{t('Мої рецензії')} ({userReviews.length})</span>
         </button>
 
         <button
@@ -225,16 +230,20 @@ export const ProfilePage = ({
           }`}
         >
           <ListFilter className="w-3.5 h-3.5" />
-          <span>Персональні добірки ({customLists.length})</span>
+          <span>{t('Персональні добірки')} ({customLists.length})</span>
         </button>
       </div>
 
       {/* Вкладка Улюблені */}
       {activeTab === 'favorites' && (
         favoriteMedia.length === 0 ? (
-          <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary italic py-8 text-center">
-            У вас поки немає доданих улюблених фільмів.
-          </p>
+          <EmptyProfileState
+            icon={Heart}
+            title="Список улюбленого поки порожній"
+            description="Зберігайте фільми, до яких хочете повернутися, і вони з’являться тут."
+            actionLabel="Знайти фільми"
+            onAction={onGoToCatalog}
+          />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {favoriteMedia.map((media) => (
@@ -247,9 +256,13 @@ export const ProfilePage = ({
       {/* Вкладка Збережені */}
       {activeTab === 'watchlist' && (
         watchlistMedia.length === 0 ? (
-          <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary italic py-8 text-center">
-            Ваш список "У збережених" поки порожній.
-          </p>
+          <EmptyProfileState
+            icon={Bookmark}
+            title="Список перегляду порожній"
+            description="Додавайте сюди фільми, які плануєте подивитися найближчим часом."
+            actionLabel="Обрати фільм"
+            onAction={onGoToCatalog}
+          />
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {watchlistMedia.map((media) => (
@@ -262,9 +275,13 @@ export const ProfilePage = ({
       {/* Вкладка Рецензії із кнопкою "Показати ще" */}
       {activeTab === 'reviews' && (
         userReviews.length === 0 ? (
-          <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary italic py-8 text-center">
-            Ви ще не залишили жодного відгуку.
-          </p>
+          <EmptyProfileState
+            icon={MessageSquare}
+            title="Рецензій поки немає"
+            description="Оцініть переглянутий фільм і поділіться враженнями на його сторінці."
+            actionLabel="Знайти фільми"
+            onAction={onGoToCatalog}
+          />
         ) : (
           <div className="space-y-3">
             {userReviews.slice(0, visibleReviewsCount).map((review) => {
@@ -302,11 +319,13 @@ export const ProfilePage = ({
 
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3
+                      <h3
                           className="text-sm font-heading font-bold uppercase text-light-textPrimary dark:text-dark-textPrimary cursor-pointer hover:text-dark-accent transition-colors"
                           onClick={() => onSelectMedia(targetMedia)}
                         >
-                          {movieTitle}
+                          {language === 'en'
+                            ? (targetMedia.originalTitle || movieTitle).toLocaleUpperCase('en-US')
+                            : movieTitle}
                         </h3>
 
                         {review.isRewatch && (
@@ -336,7 +355,7 @@ export const ProfilePage = ({
                       type="button"
                       onClick={() => onDeleteReviewGlobal(review.id)}
                       className="p-1.5 text-light-textSecondary dark:text-dark-textSecondary hover:text-red-500 transition-colors cursor-pointer"
-                      title="Видалити відгук"
+                      title={t('Видалити відгук')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -353,7 +372,7 @@ export const ProfilePage = ({
                   onClick={() => setVisibleReviewsCount((prev) => prev + 10)}
                   className="px-4 py-2 text-xs font-sans font-bold uppercase tracking-wider rounded-xs border border-light-border dark:border-dark-border bg-light-bg dark:bg-dark-bg text-light-textPrimary dark:text-dark-textPrimary hover:border-dark-accent transition-colors cursor-pointer"
                 >
-                  Показати ще ({userReviews.length - visibleReviewsCount})
+                  {t('Показати ще')} ({userReviews.length - visibleReviewsCount})
                 </button>
               </div>
             )}
@@ -366,7 +385,7 @@ export const ProfilePage = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-sans text-light-textSecondary dark:text-dark-textSecondary">
-              Ваші тематичні листи та колекції:
+              {t('Ваші тематичні листи та колекції:')}
             </span>
             <button
               type="button"
@@ -374,17 +393,17 @@ export const ProfilePage = ({
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-sans font-bold uppercase bg-dark-accent text-slate-950 rounded-xs hover:opacity-90 transition-opacity cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Створити список</span>
+              <span>{t('Створити список')}</span>
             </button>
           </div>
 
           {customLists.length === 0 ? (
             <div className="text-center py-10 bg-light-surface dark:bg-dark-surface rounded-md border border-light-border dark:border-dark-border space-y-2">
               <p className="text-xs font-bold uppercase text-light-textPrimary dark:text-dark-textPrimary">
-                Немає персональних списків
+                {t('Немає персональних списків')}
               </p>
               <p className="text-[11px] text-light-textSecondary dark:text-dark-textSecondary">
-                Натисніть кнопку вище, щоб створити добірку (наприклад: "Топ 5 нуару").
+                {t('Натисніть кнопку вище, щоб створити добірку (наприклад: "Топ 5 нуару").')}
               </p>
             </div>
           ) : (
@@ -410,7 +429,7 @@ export const ProfilePage = ({
                       type="button"
                       onClick={() => onDeleteList(list.id)}
                       className="p-1 text-light-textSecondary dark:text-dark-textSecondary hover:text-red-500 transition-colors cursor-pointer"
-                      title="Видалити список"
+                      title={t('Видалити список')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -418,7 +437,7 @@ export const ProfilePage = ({
 
                   {list.items?.length === 0 ? (
                     <p className="text-[11px] text-light-textSecondary dark:text-dark-textSecondary italic py-2">
-                      У цьому списку поки немає фільмів. Додавайте їх зі сторінки будь-якого фільму!
+                      {t('У цьому списку поки немає фільмів. Додавайте їх зі сторінки будь-якого фільму!')}
                     </p>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
@@ -434,7 +453,7 @@ export const ProfilePage = ({
                             type="button"
                             onClick={() => onRemoveFromList(list.id, item.id)}
                             className="absolute top-1 right-1 p-1 bg-black/80 text-white rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-600 transition-all cursor-pointer"
-                            title="Прибрати зі списку"
+                            title={t('Прибрати зі списку')}
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -455,7 +474,7 @@ export const ProfilePage = ({
           <div className="w-full max-w-sm bg-light-surface dark:bg-dark-surface border border-light-border dark:border-dark-border rounded-md p-5 space-y-4 shadow-2xl">
             <div className="flex items-center justify-between border-b border-light-border dark:border-dark-border pb-2">
               <h3 className="text-sm font-heading font-bold uppercase text-light-textPrimary dark:text-dark-textPrimary">
-                Створити новий список
+                {t('Створити новий список')}
               </h3>
               <button
                 type="button"
@@ -469,13 +488,13 @@ export const ProfilePage = ({
             <form onSubmit={handleCreateListSubmit} className="space-y-3">
               <div>
                 <label className="text-[10px] font-sans font-bold uppercase text-light-textSecondary dark:text-dark-textSecondary block mb-1">
-                  Назва списку *
+                  {t('Назва списку *')}
                 </label>
                 <input
                   type="text"
                   value={newListTitle}
                   onChange={(e) => setNewListTitle(e.target.value)}
-                  placeholder="наприклад: Топ атмосферного нуару"
+                  placeholder={t('наприклад: Топ атмосферного нуару')}
                   className="w-full p-2 text-xs font-sans bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border rounded-xs text-light-textPrimary dark:text-dark-textPrimary focus:outline-none focus:border-dark-accent"
                   required
                 />
@@ -483,13 +502,13 @@ export const ProfilePage = ({
 
               <div>
                 <label className="text-[10px] font-sans font-bold uppercase text-light-textSecondary dark:text-dark-textSecondary block mb-1">
-                  Опис (необов'язково)
+                  {t("Опис (необов'язково)")}
                 </label>
                 <textarea
                   rows={2}
                   value={newListDesc}
                   onChange={(e) => setNewListDesc(e.target.value)}
-                  placeholder="Короткий опис добірки..."
+                  placeholder={t('Короткий опис добірки...')}
                   className="w-full p-2 text-xs font-sans bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border rounded-xs text-light-textPrimary dark:text-dark-textPrimary focus:outline-none focus:border-dark-accent resize-none"
                 />
               </div>
@@ -500,20 +519,47 @@ export const ProfilePage = ({
                   onClick={() => setShowCreateModal(false)}
                   className="px-3 py-1.5 text-xs font-sans font-bold uppercase text-light-textSecondary dark:text-dark-textSecondary hover:underline"
                 >
-                  Скасувати
+                  {t('Скасувати')}
                 </button>
                 <button
                   type="submit"
                   disabled={!newListTitle.trim()}
                   className="px-4 py-1.5 text-xs font-sans font-bold uppercase bg-dark-accent text-slate-950 rounded-xs hover:opacity-90 disabled:opacity-50"
                 >
-                  Створити
+                  {t('Створити')}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      <details className="group rounded-md border border-light-border dark:border-dark-border bg-light-surface/60 dark:bg-dark-surface/60">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-xs font-semibold text-light-textSecondary dark:text-dark-textSecondary marker:hidden [&::-webkit-details-marker]:hidden">
+          <span>{t('Резервна копія та дані акаунта')}</span>
+          <ChevronDown aria-hidden="true" className="h-4 w-4 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-light-border dark:border-dark-border px-4 py-4">
+          <p className="text-xs text-light-textSecondary dark:text-dark-textSecondary">
+            {t('Збережіть свої списки та вподобання або перенесіть їх з іншого пристрою.')}
+          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={onExportUserData}
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-sans font-semibold rounded-xs bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border text-light-textPrimary dark:text-dark-textPrimary hover:border-dark-accent transition-colors cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5 text-dark-accent" />
+              <span>{t('Експортувати дані')}</span>
+            </button>
+            <label className="flex items-center gap-1.5 px-3 py-2 text-xs font-sans font-semibold rounded-xs bg-light-bg dark:bg-dark-bg border border-light-border dark:border-dark-border text-light-textPrimary dark:text-dark-textPrimary hover:border-dark-accent transition-colors cursor-pointer">
+              <Upload className="w-3.5 h-3.5 text-dark-accent" />
+              <span>{t('Імпортувати дані')}</span>
+              <input type="file" accept=".json" onChange={onImportUserData} className="hidden" />
+            </label>
+          </div>
+        </div>
+      </details>
 
     </div>
   );

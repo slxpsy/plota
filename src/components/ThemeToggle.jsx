@@ -1,15 +1,17 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 
 export const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
+  const { t } = useLanguage();
   const isDark = theme === 'dark';
 
   return (
     <button
       onClick={toggleTheme}
-      aria-label="Переключити тему"
+      aria-label={t('Переключити тему')}
       className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-sans font-bold uppercase tracking-wider
                  bg-light-surface dark:bg-dark-surface
                  border border-light-border dark:border-dark-border

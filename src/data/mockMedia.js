@@ -1,7 +1,7 @@
 export const INITIAL_MEDIA = [
   {
     id: "1",
-    title: "Blade Runner 2049",
+    title: "Той, хто біжить по лезу 2049",
     originalTitle: "Blade Runner 2049",
     year: 2017,
     rating: 8.0,
